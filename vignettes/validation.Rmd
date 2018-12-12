@@ -1,0 +1,98 @@
+---
+title: "Rain Data Validation"
+author: "Hauke Sonnenberg"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rain Data Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(kwb.utils)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+PATHS <- resolve(list(
+  flusshygiene = "//poseidon/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
+  validation = "<flusshygiene>/Data-Work packages/Daten/Regen/validation",
+  r_dev = "<desktop>/R_Development",
+  script_1 = "<r_dev>/RScripts/Flusshygiene/readBwbRainFiles.R",
+  script_2 = "<r_dev>/RPackages/kwb.rain/inst/extdata/user_validation.R"
+))
+
+paths <- resolve(PATHS, desktop = desktop())
+
+#catLines(readLines(paths$script_1, 50))
+dir_config <- file.path(desktop(), "R_Development/RScripts/Flusshygiene/config")
+paths_read <- readDictionary(file.path(dir_config, "pathDictionary.txt"))
+paths_read <- resolve(paths_read)
+```
+
+This document explains the rain data validation procedure as we started to apply 
+within the FLUSSHYGIENE project.
+
+### Rain Data Files
+
+The rain data provided by Berliner Wasserbetriebe (BWB) come in the form of 
+Excel files (rain data files) that store for each five minute period the 
+cumulative rain height measured by different rain gauges at the end of the 
+period. The data are raw, i.e. they represent what was logged by the rain 
+gauges. 
+
+### Rain Correction Files
+
+In order to calibrate the rain gauges BWB staff visits the rain gauges on a 
+regular basis and applies a certain amount of water to them. This amount of 
+water that appears as additional rain height in the data but does not represent 
+actual rain needs to be excluded from the rain data. Therefore, BWB provides 
+another set of Excel files (rain correction files) that contain for each day and 
+each gauge the expected actual total rain height at that gauge and day.
+
+### Rain Data Validation
+
+The task to be performed during "rain data validation" is to 
+
+- find the gauges and days at which the daily rain height calculated from the
+  rain data files (raw rain height) differ from the corresponding values in the 
+  rain correction files (actual rain height).
+  
+- "distribute" the difference between actual rain height and raw rain height 
+  that is given on a daily basis to the actual five minute time intervals in 
+  which the differences most probably occurred.
+
+### Method
+
+We follow a semi-automatic approach in which we use 
+
+
+- the script ``r windowsPath(PATHS$script_1)`` to read, reformat and merge rain 
+  data and correction data and to save the result to RData files and
+
+- the script ``r windowsPath(PATHS$script_2)`` to read rain data and correction 
+  data from the RData files and prepare csv files in which the time intervals 
+  that most probably contain rain heights that need correction are indicated. 
+
+The first script reads 
+
+- rain data files from ``r windowsPath(paths_read$dir.data)`` and 
+
+- correction files from ``r windowsPath(paths_read$dir.corr)``.
+
+The user can then check the CSV files created by the second script, edit them 
+appropriately and save them under a different name (`userdiff_*.csv` in the
+`userdiffs` folder). 
+
+It is **important** to save them out of the folder `autodiffs` because the files 
+within this folder are always overwritten by the second script.
+
+After editing the userdiff-files, the script
+
+``r PATHS$script_2``
+
+can be used to apply the corrections defined by the user to the raw data and to 
+store the resulting validated data.
