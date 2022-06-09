@@ -7,6 +7,8 @@
 #'   'long' format.
 #'
 #' @export
+#' @importFrom kwb.datetime intervalKey
+#' @importFrom kwb.utils selectColumns hsMatrixToListForm
 getDailyCumulativeRain <- function
 (
   rd,

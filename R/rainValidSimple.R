@@ -14,7 +14,7 @@
 #' @param dbg if \code{TRUE} (default) debug messages are shown
 #'
 #' @export
-#'
+#' @importFrom kwb.utils removeColumns selectColumns
 correctRainDiffs <- function(
   rainDiffs, userCorrections, gauges = names(rainDiffs)[-(1:2)], dbg = TRUE
 )
@@ -87,7 +87,8 @@ prepareTimeColumns <- function(userCorrections)
 #' @param dbg if \code{TRUE} (default) debug messages are shown
 #'
 #' @export
-#'
+#' @importFrom kwb.utils catIf removeColumns selectElements 
+#' @importFrom kwb.event hsEventsOnChange
 writeDiffFiles <- function
 (
   gaugeSignals, dir.out, gauges = names(gaugeSignals), years = NULL,
@@ -153,7 +154,12 @@ writeDiffFiles <- function
   file.path(dir.out, sprintf("autodiff_%s%s.csv", gauge, suffix))
 }
 
-# .name ------------------------------------------------------------------------
+#' .name ------------------------------------------------------------------------
+#'
+#'@noRd
+#'@noMd
+#'@keywords internal
+#'@importFrom kwb.utils stringList 
 .name <- function(id)
 {
   mapping <- c(
@@ -185,7 +191,8 @@ writeDiffFiles <- function
 #'   \code{kwb.read:::.toLongFormat(corrections, type = "correction")}
 #'
 #' @export
-#'
+#' @importFrom stats aggregate
+#' @importFrom kwb.utils almostEqual hsRenameColumns roundColumns selectColumns
 toValidationTable <- function(signals, corrections)
 {
   # Add daily sums (round to two digits)
@@ -235,7 +242,8 @@ toValidationTable <- function(signals, corrections)
 #'
 #' @param x vector of character
 #' @param type one of \code{"R", "csv"}
-#'
+#' @export
+#' @importFrom  kwb.utils catLines collapsed hsQuoteChr
 defaultArgumentAssignment <- function(x, type = c("R", "csv")[1])
 {
   if (type == "R") {
@@ -268,7 +276,7 @@ defaultArgumentAssignment <- function(x, type = c("R", "csv")[1])
 #' @param \dots arguments passed to \code{\link{compactForGauges}}
 #'
 #' @export
-#'
+#' @importFrom kwb.utils roundColumns selectElements toNamedList
 toGaugeSignals <- function(signals, validation, neighbours, digits = 3, ...)
 {
   #digits=3
@@ -299,7 +307,8 @@ toGaugeSignals <- function(signals, validation, neighbours, digits = 3, ...)
 #'   \code{\link[kwb.read]{getGaugeDistances}}
 #'
 #' @export
-#'
+#' @importFrom kwb.utils selectColumns toNamedList
+#' @importFrom kwb.read distanceToNeighbour getGaugeDistances mdb_rain_meta
 getNeighbours <- function(signals, gaugeInfo, n = 2, gaugePos = NULL)
 {
   get <- kwb.utils::selectColumns
@@ -362,7 +371,10 @@ getNeighbours <- function(signals, gaugeInfo, n = 2, gaugePos = NULL)
 #' @param level level of compression
 #' @param stars if \code{TRUE} (default) stars are used to indicate differences
 #' @param dbg if \code{TRUE} (default) debug messages are shown
-#'
+#' @export
+#' @importFrom  kwb.utils catIf defaultIfNA moveColumnsToFront removeColumns 
+#' resetRowNames selectColumns
+#' @importFrom stats reshape
 compactForGauges <- function(
   signals, gauges, validation, level = 2, stars = TRUE, dbg = TRUE
 )
@@ -491,7 +503,9 @@ compactForGauges <- function(
 #' @param x data frame
 #' @param keys columns that are expected to be key columns and that should not
 #'   contain duplicated value combinations
-#'
+#' @export
+#' @importFrom kwb.utils printIf selectColumns
+#' @importFrom utils head
 checkForDuplicates <- function(x, keys)
 {
   isDuplicate <- duplicated(kwb.utils::selectColumns(x, keys))
@@ -516,7 +530,9 @@ checkForDuplicates <- function(x, keys)
 #' @param dbg if \code{TRUE} (default) debug messages are shown
 #'
 #' @export
-#'
+#' @importFrom kwb.utils catIf defaultIf hsChrToNum naToLastNonNa selectColumns
+#' resetRowNames
+#' @importFrom kwb.datetime reformatTimestamp
 readUserCorrection <- function(
   file, sep = ";", country = "de", date.format = "%d.%m.%Y", dbg = TRUE
 )
@@ -542,7 +558,7 @@ readUserCorrection <- function(
   kwb.utils::catIf(dbg, "ok.\n")
 
   dates <- kwb.utils::selectColumns(x, "Date")
-  dates <- kwb.utils::.defaultIf(function(x) x == "", dates, NA)
+  dates <- kwb.utils::defaultIf(function(x) x == "", dates, NA)
   x$Date <- kwb.utils::naToLastNonNa(dates)
 
   x$Date <- kwb.datetime::reformatTimestamp(x$Date, date.format, "%Y-%m-%d")

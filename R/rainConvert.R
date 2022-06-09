@@ -9,7 +9,8 @@
 #'   intervals in the first two (character) columns, rain heights of five minute
 #'   intervals in the remaining columns. Such a data frame is returned by
 #'   \code{\link{plotRainEventOverview}}
-#'
+#' @export
+#' @importFrom kwb.datetime isoToLocaltime
 reformat_rain_data <- function(rain)
 {
   stopifnot(is.data.frame(rain), ncol(rain) > 2)
@@ -21,10 +22,10 @@ reformat_rain_data <- function(rain)
 
   timestamps <- kwb.utils::selectColumns(rain, "From")
   
-  # Add seconds as required by "iso_to_localtime"
+  # Add seconds as required by "isoToLocaltime"
   timestamps <- gsub("\\+", ":00+", timestamps)
 
-  rain$LocalDateTime <- kwb.datetime::iso_to_localtime(timestamps)
+  rain$LocalDateTime <- kwb.datetime::isoToLocaltime(timestamps)
 
   kwb.utils::moveColumnsToFront(rain[, -(1:2)], "LocalDateTime")
 }
@@ -35,7 +36,7 @@ reformat_rain_data <- function(rain)
 #' @param rainData rain data as returned by \code{kwb.read::readBwbRainData}
 #'
 #' @export
-#'
+#' @importFrom kwb.utils hsMatrixToListForm
 rainToLongFormat <- function(rainData)
 {
   kwb.utils::hsMatrixToListForm(
@@ -53,7 +54,7 @@ rainToLongFormat <- function(rainData)
 #'   \code{kwb.read::readBwbRainCorrection}
 #'
 #' @export
-#'
+#' @importFrom  kwb.utils hsMatrixToListForm
 corrToLongFormat <- function(corrData)
 {
   dateColumn <- "tDate_BWB"

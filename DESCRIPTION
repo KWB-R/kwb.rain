@@ -1,11 +1,18 @@
-Package: kwb.rain
 Type: Package
+Package: kwb.rain
 Title: Functions to Handle and Plot Rain Data at KWB
-Version: 0.1.99
-Date: 2016-10-20
-Author: Hauke Sonnenberg
-Maintainer: Hauke Sonnenberg <hauke.sonnenberg@kompetenz-wasser.de>
+Version: 0.2.0
+Authors@R: c(
+    person("Hauke", "Sonnenberg", , "hauke.sonnenberg@kompetenz-wasser.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9134-2871")),
+    person("Michael", "Rustler", , "michael.rustler@kompetenz-wasser.de", role = "ctb",
+           comment = c(ORCID = "0000-0003-0647-7726")),
+    person("FLUSSHYGIENE", role = "fnd"),
+    person("KURAS", role = "fnd"),
+    person("Kompetenzzentrum Wasser Berlin gGmbH (KWB)", role = "cph")
+  )
 Description: Functions to handle and plot rain data at KWB.
+License: MIT + file LICENSE
 Imports:
     kwb.datetime,
     kwb.event,
@@ -13,9 +20,17 @@ Imports:
     kwb.read,
     kwb.utils,
     lattice
-License: GPL-2
-LazyData: TRUE
-RoxygenNote: 6.0.1
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown
-VignetteBuilder: knitr
+VignetteBuilder: 
+    knitr
+Remotes:
+    github::kwb-r/kwb.datetime,
+    github::kwb-r/kwb.event,
+    github::kwb-r/kwb.misc,
+    github::kwb-r/kwb.read,
+    github::kwb-r/kwb.utils
+Encoding: UTF-8
+LazyData: TRUE
+RoxygenNote: 7.1.2
