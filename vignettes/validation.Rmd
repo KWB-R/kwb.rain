@@ -39,6 +39,12 @@ paths <- kwb.utils::resolve(PATHS, desktop = kwb.utils::desktop())
 dir_config <- file.path(kwb.utils::desktop(), "R_Development/RScripts/Flusshygiene/config")
 paths_read <- kwb.utils::readDictionary(file.path(dir_config, "pathDictionary.txt"))
 paths_read <- kwb.utils::resolve(paths_read)
+paths_read$dir.data <- ifelse(dir.exists(paths_read$dir.data),
+                              paths_read$dir.data, 
+                              "<path_dir.data>")
+paths_read$dir.corr <- ifelse(dir.exists(paths_read$dir.corr),
+                              paths_read$dir.corr, 
+                              "<path_dir.corr>")
 ```
 
 This document explains the rain data validation procedure as we started to apply 
@@ -78,18 +84,18 @@ The task to be performed during "rain data validation" is to
 We follow a semi-automatic approach in which we use 
 
 
-- the script ``r windowsPath(PATHS$script_1)`` to read, reformat and merge rain 
+- the script ``r kwb.utils::windowsPath(PATHS$script_1)`` to read, reformat and merge rain 
   data and correction data and to save the result to RData files and
 
-- the script ``r windowsPath(PATHS$script_2)`` to read rain data and correction 
+- the script ``r kwb.utils::windowsPath(PATHS$script_2)`` to read rain data and correction 
   data from the RData files and prepare csv files in which the time intervals 
   that most probably contain rain heights that need correction are indicated. 
 
 The first script reads 
 
-- rain data files from ``r windowsPath(paths_read$dir.data)`` and 
+- rain data files from ``r kwb.utils::windowsPath(paths_read$dir.data)`` and 
 
-- correction files from ``r windowsPath(paths_read$dir.corr)``.
+- correction files from ``r kwb.utils::windowsPath(paths_read$dir.corr)``.
 
 The user can then check the CSV files created by the second script, edit them 
 appropriately and save them under a different name (`userdiff_*.csv` in the
