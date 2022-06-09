@@ -13,7 +13,8 @@
 #'   correction data is available)
 #'
 #' @export
-#'
+#' @importFrom kwb.utils callWith defaultIfNA hsMatrixToListForm hsRenameColumns
+#' moveColumnsToFront selectColumns hsRenameColumns resetRowNames
 getCorrectionCases <- function(corrData, rainData, ...)
 {
   # Prepare "left" table x: (non-zero) correction value per gauge and day
@@ -67,7 +68,8 @@ getCorrectionCases <- function(corrData, rainData, ...)
 #' @param excludeColumns vector of column numbers to be excluded before aggregation
 #'
 #' @export
-#'
+#' @importFrom kwb.datetime hsDateStr
+#' @importFrom stats aggregate
 aggregateByDay <- function(x, FUN, ..., timeColumn = 1, excludeColumns = 1:2)
 {
   by <- list(day = as.Date(kwb.datetime::hsDateStr(x[, timeColumn])))

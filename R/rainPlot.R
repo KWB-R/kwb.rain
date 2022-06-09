@@ -9,7 +9,11 @@
 #' @param to.pdf if \code{TRUE} the output goes into a temporary PDF file
 #'
 #' @export
-#'
+#' @importFrom kwb.datetime hsDateStr
+#' @importFrom stats aggregate
+#' @importFrom kwb.utils finishAndShowPdfIf preparePdfIf
+#' @importFrom graphics par
+#' @importFrom kwb.misc hsPrintToPlot
 plotDailyRainHeightTable <- function
 (
   rd,
@@ -87,7 +91,9 @@ plotRainEventOverview <- function(rd, timeColumn = "tEnd_BWB", to.pdf = TRUE)
 #'   file, otherwise to the current plot device
 #'
 #' @export
-#'
+#' @importFrom lattice xyplot
+#' @importFrom kwb.datetime intervalKey
+#' @importFrom kwb.utils finishAndShowPdfIf preparePdfIf
 plotCumulativeRain <- function(rd.long, to.pdf = TRUE)
 {
   cat("Plotting cumulative rain heights... ")
