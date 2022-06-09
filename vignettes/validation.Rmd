@@ -16,21 +16,29 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
 
-PATHS <- resolve(list(
-  flusshygiene = "//poseidon/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
+### Define Paths
+
+```{r define_paths, eval = TRUE}
+
+PATHS <- kwb.utils::resolve(list(
+  servername = ifelse(Sys.getenv("SERVERNAME") != "",
+                      Sys.getenv("SERVERNAME"),
+                      "servername"),
+  flusshygiene = "//<servername>/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
   validation = "<flusshygiene>/Data-Work packages/Daten/Regen/validation",
   r_dev = "<desktop>/R_Development",
   script_1 = "<r_dev>/RScripts/Flusshygiene/readBwbRainFiles.R",
   script_2 = "<r_dev>/RPackages/kwb.rain/inst/extdata/user_validation.R"
 ))
 
-paths <- resolve(PATHS, desktop = desktop())
+paths <- kwb.utils::resolve(PATHS, desktop = kwb.utils::desktop())
 
 #catLines(readLines(paths$script_1, 50))
-dir_config <- file.path(desktop(), "R_Development/RScripts/Flusshygiene/config")
-paths_read <- readDictionary(file.path(dir_config, "pathDictionary.txt"))
-paths_read <- resolve(paths_read)
+dir_config <- file.path(kwb.utils::desktop(), "R_Development/RScripts/Flusshygiene/config")
+paths_read <- kwb.utils::readDictionary(file.path(dir_config, "pathDictionary.txt"))
+paths_read <- kwb.utils::resolve(paths_read)
 ```
 
 This document explains the rain data validation procedure as we started to apply 

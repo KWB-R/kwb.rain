@@ -1,4 +1,4 @@
-# kwb.rain 0.2.0
+# [kwb.rain 0.2.0](https://github.com/KWB-R/kwb.rain/releases/tag/v0.2.0) <small>2022-06-09</small>
 
 * Harmonise with [kwb.pkgbuild](https://github.com/kwb-r/kwb.pkgbuild)
 
