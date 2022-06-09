@@ -37,8 +37,14 @@ paths <- kwb.utils::resolve(PATHS, desktop = kwb.utils::desktop())
 
 #catLines(readLines(paths$script_1, 50))
 dir_config <- file.path(kwb.utils::desktop(), "R_Development/RScripts/Flusshygiene/config")
-paths_read <- kwb.utils::readDictionary(file.path(dir_config, "pathDictionary.txt"))
-paths_read <- kwb.utils::resolve(paths_read)
+if(dir.exists(dir_config)) {
+  paths_read <- kwb.utils::readDictionary(file.path(dir_config, "pathDictionary.txt"))
+  paths_read <- kwb.utils::resolve(paths_read)
+} else {
+  paths_read <- list(dir.data = "", 
+                     dir.corr = ""
+  )  
+}
 paths_read$dir.data <- ifelse(dir.exists(paths_read$dir.data),
                               paths_read$dir.data, 
                               "<path_dir.data>")
@@ -72,12 +78,12 @@ each gauge the expected actual total rain height at that gauge and day.
 The task to be performed during "rain data validation" is to 
 
 - find the gauges and days at which the daily rain height calculated from the
-  rain data files (raw rain height) differ from the corresponding values in the 
-  rain correction files (actual rain height).
-  
+rain data files (raw rain height) differ from the corresponding values in the 
+rain correction files (actual rain height).
+
 - "distribute" the difference between actual rain height and raw rain height 
-  that is given on a daily basis to the actual five minute time intervals in 
-  which the differences most probably occurred.
+that is given on a daily basis to the actual five minute time intervals in 
+which the differences most probably occurred.
 
 ### Method
 
@@ -85,11 +91,11 @@ We follow a semi-automatic approach in which we use
 
 
 - the script ``r kwb.utils::windowsPath(PATHS$script_1)`` to read, reformat and merge rain 
-  data and correction data and to save the result to RData files and
+data and correction data and to save the result to RData files and
 
 - the script ``r kwb.utils::windowsPath(PATHS$script_2)`` to read rain data and correction 
-  data from the RData files and prepare csv files in which the time intervals 
-  that most probably contain rain heights that need correction are indicated. 
+data from the RData files and prepare csv files in which the time intervals 
+that most probably contain rain heights that need correction are indicated. 
 
 The first script reads 
 
