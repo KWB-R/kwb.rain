@@ -1,0 +1,10 @@
+pandoc: 2.7.3
+pkgdown: 2.0.3
+pkgdown_sha: ~
+articles:
+  validation: validation.html
+last_built: 2022-06-10T20:53Z
+urls:
+  reference: https://kwb-r.github.io/kwb.rain/reference
+  article: https://kwb-r.github.io/kwb.rain/articles
+
