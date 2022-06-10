@@ -5,27 +5,25 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Rain Data Validation}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include = FALSE}
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-### Define Paths
-
-```{r define_paths, eval = TRUE}
+```{r define_paths, include = FALSE}
 is_ghactions <- identical(Sys.getenv("CI"), "true")
 
+# Define Paths
 PATHS <- kwb.utils::resolve(list(
-  servername = ifelse(Sys.getenv("SERVERNAME") != "",
-                      Sys.getenv("SERVERNAME"),
-                      "servername"),
+  servername = Sys.getenv("SERVERNAME", unset = "my-server"),
   flusshygiene = "//<servername>/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
   validation = "<flusshygiene>/Data-Work packages/Daten/Regen/validation",
   desktop = ifelse(kwb.utils::.OStype() %in% c("windows", "linux"), 
@@ -38,22 +36,24 @@ PATHS <- kwb.utils::resolve(list(
   script_2 = "<r_dev>/RPackages/kwb.rain/inst/extdata/user_validation.R"
 ))
 
-
-
-if(file.exists(PATHS$dictonary_file) && !is_ghactions) {
-  paths_read <- kwb.utils::readDictionary(file = PATHS$dictonary_file)
-  paths_read <- kwb.utils::resolve(paths_read)
+# Read further paths from a "path dictionary" file
+paths_read <- if (!is_ghactions && file.exists(PATHS$dictonary_file)) {
+  kwb.utils::resolve(kwb.utils::readDictionary(PATHS$dictonary_file))
 } else {
-  paths_read <- list(dir.data = "", 
-                     dir.corr = ""
-  )  
+  list(dir.data = "", dir.corr = "")  
 }
-paths_read$dir.data <- ifelse(dir.exists(paths_read$dir.data),
-                              paths_read$dir.data, 
-                              "<path_dir.data>")
-paths_read$dir.corr <- ifelse(dir.exists(paths_read$dir.corr),
-                              paths_read$dir.corr, 
-                              "<path_dir.corr>")
+
+paths_read$dir.data <- ifelse(
+  dir.exists(paths_read$dir.data),
+  paths_read$dir.data, 
+  "<path_dir.data>"
+)
+
+paths_read$dir.corr <- ifelse(
+  dir.exists(paths_read$dir.corr),
+  paths_read$dir.corr, 
+  "<path_dir.corr>"
+)
 ```
 
 This document explains the rain data validation procedure as we started to apply 
