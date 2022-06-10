@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 ### Define Paths
 
 ```{r define_paths, eval = TRUE}
+is_ghactions <- identical(Sys.getenv("CI"), "true")
 
 PATHS <- kwb.utils::resolve(list(
   servername = ifelse(Sys.getenv("SERVERNAME") != "",
@@ -27,7 +28,9 @@ PATHS <- kwb.utils::resolve(list(
                       "servername"),
   flusshygiene = "//<servername>/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
   validation = "<flusshygiene>/Data-Work packages/Daten/Regen/validation",
-  desktop = kwb.utils::desktop(),
+  desktop = ifelse(kwb.utils::.OStype() %in% c("windows", "linux"), 
+                   kwb.utils::desktop(),
+                   "macos_desktopdir"),
   r_dev = "<desktop>/R_Development",
   dir_config = "<r_dev>/RScripts/Flusshygiene/config",
   dictonary_file = "<dir_config>/pathDictionary.txt",
@@ -37,7 +40,7 @@ PATHS <- kwb.utils::resolve(list(
 
 
 
-if(file.exists(PATHS$dictonary_file)) {
+if(file.exists(PATHS$dictonary_file) && !is_ghactions) {
   paths_read <- kwb.utils::readDictionary(file = PATHS$dictonary_file)
   paths_read <- kwb.utils::resolve(paths_read)
 } else {
