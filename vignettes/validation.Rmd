@@ -10,7 +10,6 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-library(kwb.utils)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -28,17 +27,18 @@ PATHS <- kwb.utils::resolve(list(
                       "servername"),
   flusshygiene = "//<servername>/projekte$/SUW_Department/Projects/FLUSSHYGIENE",
   validation = "<flusshygiene>/Data-Work packages/Daten/Regen/validation",
+  desktop = kwb.utils::desktop(),
   r_dev = "<desktop>/R_Development",
+  dir_config = "<r_dev>/RScripts/Flusshygiene/config",
+  dictonary_file = "<dir_config>/pathDictionary.txt",
   script_1 = "<r_dev>/RScripts/Flusshygiene/readBwbRainFiles.R",
   script_2 = "<r_dev>/RPackages/kwb.rain/inst/extdata/user_validation.R"
 ))
 
-paths <- kwb.utils::resolve(PATHS, desktop = kwb.utils::desktop())
 
-#catLines(readLines(paths$script_1, 50))
-dir_config <- file.path(kwb.utils::desktop(), "R_Development/RScripts/Flusshygiene/config")
-if(dir.exists(dir_config)) {
-  paths_read <- kwb.utils::readDictionary(file.path(dir_config, "pathDictionary.txt"))
+
+if(file.exists(PATHS$dictonary_file)) {
+  paths_read <- kwb.utils::readDictionary(file = PATHS$dictonary_file)
   paths_read <- kwb.utils::resolve(paths_read)
 } else {
   paths_read <- list(dir.data = "", 
